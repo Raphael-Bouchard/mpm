@@ -1,8 +1,13 @@
 //! Constructor of contact with mesh
 template <unsigned Tdim>
-mpm::ContactFriction<Tdim>::ContactFriction(
-    const std::shared_ptr<mpm::Mesh<Tdim>>& mesh)
-    : mpm::Contact<Tdim>(mesh) {}
+
+
+// appelle la fonction contact de la classe contact contact qui va créer la variale mesh_ qui est utiliser dans la suite.
+// en gros ça appelle le constructeur de la clssse contact
+// l'idée sous jacente est qu'il n'ya pas dque des contacts de type friction, donc ça laisse la,possibilité d'en créer de nouveaux
+mpm::ContactFriction<Tdim>::ContactFriction(const std::shared_ptr<mpm::Mesh<Tdim>>& mesh): mpm::Contact<Tdim>(mesh) {}
+
+
 
 //! Initialize nodal properties
 template <unsigned Tdim>

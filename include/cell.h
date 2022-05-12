@@ -27,10 +27,14 @@ namespace mpm {
 template <unsigned Tdim>
 class Cell {
  public:
+
   //! Define a vector of size dimension
+  // permetd v'viter de taper la definition de la matrice à chaque fois
   using VectorDim = Eigen::Matrix<double, Tdim, 1>;
 
   //! Define DOFs
+  // je pense que c'est pour detrminer la taille des vecteurs qui contiendronts les informatiosn des tensuers de deformatiosnet de contraintes
+  // facon compacte de faire des boucle for et if
   static const unsigned Tdof = (Tdim == 1) ? 1 : 3 * (Tdim - 1);
 
   //! Constructor with id, number of nodes and element
@@ -263,6 +267,7 @@ class Cell {
       velocity_constraints_;
   //! Normal of face
   //! first-> face_id, second->vector of the normal
+  // map ets un dictionnaire  on a donc a chaque face_id associe le vecteur normale 
   std::map<unsigned, Eigen::VectorXd> face_normals_;
   //! Logger
   std::unique_ptr<spdlog::logger> console_;

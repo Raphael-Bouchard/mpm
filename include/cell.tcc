@@ -2,61 +2,80 @@
 template <unsigned Tdim>
 mpm::Cell<Tdim>::Cell(Index id, unsigned nnodes,
                       const std::shared_ptr<const Element<Tdim>>& elementptr,
-                      bool isoparametric)
-    : id_{id}, nnodes_{nnodes}, isoparametric_{isoparametric} {
-  // Check if the dimension is between 1 & 3
-  static_assert((Tdim >= 1 && Tdim <= 3), "Invalid global dimension");
+                      bool isoparametric) : id_{id}, nnodes_{nnodes}, isoparametric_{isoparametric}
+                      {
+                        // Check if the dimension is between 1 & 3
+                        static_assert((Tdim >= 1 && Tdim <= 3), "Invalid global dimension");
 
-  //! Logger
-  std::string logger =
-      "cell" + std::to_string(Tdim) + "d::" + std::to_string(id);
-  console_ = std::make_unique<spdlog::logger>(logger, mpm::stdout_sink);
+                        //! Logger
+                        // on créé le message a envoyer dans la console
+                        std::string logger ="cell" + std::to_string(Tdim) + "d::" + std::to_string(id);
+                        // creation du pointeur a utiliser pour le logger
+                        console_ = std::make_unique<spdlog::logger>(logger, mpm::stdout_sink);
 
-  try {
-    if (elementptr->nfunctions() == this->nnodes_) {
-      element_ = elementptr;
-      // Create an empty nodal coordinates
-      nodal_coordinates_.resize(this->nnodes_, Tdim);
-    } else {
-      throw std::runtime_error(
-          "Specified number of shape functions and nodes don't match");
-    }
-  } catch (std::exception& exception) {
-    console_->error("{} #{}: {}\n", __FILE__, __LINE__, exception.what());
-  }
-}
+
+                        // j'ai pas bien compris ce try
+                        try {
+                            if (elementptr->nfunctions() == this->nnodes_)
+                              {
+                                element_ = elementptr;
+                                // Create an empty nodal coordinates
+                                // nbre de ligne = nbre de noeud
+                                // nbre de colone = la dimension de la simulation (1D, 2D OU 3D)
+                                nodal_coordinates_.resize(this->nnodes_, Tdim);
+                              }
+                            else
+                              {
+                                // verifie si le nombre de fonction de forme et de noeud du maillage concordes
+                                // sinon stop le code en envoyant le throw qui est récupérér par le catch
+                                throw std::runtime_error("Specified number of shape functions and nodes don't match");
+                              }
+                            } // fin try
+
+                            // ce cat là est le plus classique, si il dectecte la moindre erreur,
+                            // taille de tableau etc.. il renvoie l'erreur comme ondique dans error
+                            //exception.what() erviant la véritable erreur qu'il donne normùalmeent
+                        catch (std::exception& exception)
+                          {
+                            console_->error("{} #{}: {}\n", __FILE__, __LINE__, exception.what());
+                          }
+                        }// fin du constructeur
 
 //! Return the initialisation status of cells
 template <unsigned Tdim>
-bool mpm::Cell<Tdim>::initialise() {
+bool mpm::Cell<Tdim>::initialise()
+{
   bool status = false;
   try {
-    // Check if node pointers are present and are equal to the expected number
-    if (this->nnodes_ == this->nodes_.size()) {
-      // Initialise cell properties (volume, centroid, length)
-      this->compute_centroid();
-      this->compute_mean_length();
-      this->compute_volume();
+        // Check if node pointers are present and are equal to the expected number
+        if (this->nnodes_ == this->nodes_.size())
+        {
+          // Initialise cell properties (volume, centroid, length)
+          this->compute_centroid();
+          this->compute_mean_length();
+          this->compute_volume();
 
-      // Get centroid of a cell in natural coordinates which are zeros
-      Eigen::Matrix<double, Tdim, 1> xi_centroid;
-      xi_centroid.setZero();
+          // Get centroid of a cell in natural coordinates which are zeros
+          Eigen::Matrix<double, Tdim, 1> xi_centroid;
+          xi_centroid.setZero();
 
-      Eigen::Matrix<double, Tdim, 1> zero;
-      zero.setZero();
+          Eigen::Matrix<double, Tdim, 1> zero;
+          zero.setZero();
 
-      // dN/dX at the centroid
-      dn_dx_centroid_ =
-          element_->dn_dx(xi_centroid, this->nodal_coordinates_, zero, zero);
+          // dN/dX at the centroid
+          dn_dx_centroid_ = element_->dn_dx(xi_centroid, this->nodal_coordinates_, zero, zero);
 
-      status = true;
-    } else {
-      throw std::runtime_error(
-          "Specified number of nodes for a cell is not present");
+          status = true;
+        }
+        else
+        {
+          throw std::runtime_error("Specified number of nodes for a cell is not present");
+        }
     }
-  } catch (std::exception& exception) {
-    console_->error("{} #{}: {}\n", __FILE__, __LINE__, exception.what());
-  }
+catch (std::exception& exception)
+    {
+      console_->error("{} #{}: {}\n", __FILE__, __LINE__, exception.what());
+    }
   return status;
 }
 
@@ -65,15 +84,15 @@ bool mpm::Cell<Tdim>::initialise() {
 template <unsigned Tdim>
 bool mpm::Cell<Tdim>::is_initialised() const {
   // Check if node pointers are present and are equal to the # shape_fns
-  return ((this->nnodes_ != 0 && this->nfunctions() == this->nodes_.size()) &&
-          // Check if shape function is assigned
-          this->nfunctions() != 0 &&
-          // Check if volume of a cell is initialised
-          (std::fabs(this->volume_ - std::numeric_limits<double>::lowest()) >
-           1.0E-10) &&
-          // Check if mean length of a cell is initialised
-          (std::fabs(this->mean_length_ - std::numeric_limits<double>::max()) >
-           1.0E-10));
+  return (
+              ( this->nnodes_ != 0 && this->nfunctions() == this->nodes_.size())            &&
+                // Check if shape function is assigned
+                this->nfunctions() != 0                                                     &&
+                // Check if volume of a cell is initialised
+                (std::fabs(this->volume_ - std::numeric_limits<double>::lowest()) >1.0E-10) &&
+                // Check if mean length of a cell is initialised
+                (std::fabs(this->mean_length_ - std::numeric_limits<double>::max()) >1.0E-10)
+         );
 }
 
 //! Assign quadrature
@@ -412,7 +431,7 @@ inline Eigen::Matrix<double, 2, 1> mpm::Cell<2>::local_coordinates_point(
     if (indices.size() == 3) {
       //   2 0
       //     |\
-      //     | \  
+      //     | \
       //   c |  \ b
       //     |   \
       //     |    \

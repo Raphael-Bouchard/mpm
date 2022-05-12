@@ -121,6 +121,8 @@ bool mpm::MPMExplicit<Tdim>::solve() {
   this->initialise_loads();
 
   auto solver_begin = std::chrono::steady_clock::now();
+
+
   // Main loop
   for (; step_ < nsteps_; ++step_) {
 
@@ -185,7 +187,9 @@ bool mpm::MPMExplicit<Tdim>::solve() {
       this->write_partio(this->step_, this->nsteps_);
 #endif
     }
-  }
+  } // fin de la boucle principale 
+
+
   auto solver_end = std::chrono::steady_clock::now();
   console_->info("Rank {}, Explicit {} solver duration: {} ms", mpi_rank,
                  mpm_scheme_->scheme(),
