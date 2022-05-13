@@ -1,6 +1,6 @@
 //! Angle between two vectors in radians
 template <int Tdim>
-inline double mpm::geometry::angle_between_vectors(
+double mpm::geometry::angle_between_vectors(
     const Eigen::Matrix<double, Tdim, 1>& vector_a,
     const Eigen::Matrix<double, Tdim, 1>& vector_b) {
   // angle between two vectors a and b = arccos( a dot b / ||a|| ||b||)
@@ -12,7 +12,7 @@ inline double mpm::geometry::angle_between_vectors(
 //! \retval euler_angles Euler Angles
 //! \tparam Tdim Dimension
 template <int Tdim>
-inline Eigen::Matrix<double, Tdim, 1> mpm::geometry::euler_angles_cartesian(
+Eigen::Matrix<double, Tdim, 1> mpm::geometry::euler_angles_cartesian(
     const Eigen::Matrix<double, Tdim, Tdim>& new_axes) {
 
   // Make cartesian coordinate system

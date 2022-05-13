@@ -1074,41 +1074,50 @@ std::vector<std::shared_ptr<mpm::ParticleBase<Tdim>>>
 
 //! Locate particles in a cell
 template <unsigned Tdim>
-bool mpm::Mesh<Tdim>::locate_particle_cells(
-    const std::shared_ptr<mpm::ParticleBase<Tdim>>& particle) {
-  // Check the current cell if it is not invalid
-  if (particle->cell_id() != std::numeric_limits<mpm::Index>::max()) {
-    // If a cell id is present, but not a cell locate the cell from map
-    if (!particle->cell_ptr())
-      particle->assign_cell(map_cells_[particle->cell_id()]);
-    if (particle->compute_reference_location()) return true;
+bool mpm::Mesh<Tdim>::locate_particle_cells(const std::shared_ptr<mpm::ParticleBase<Tdim>>& particle)
+ {
+      // Check the current cell if it is not invalid
+      if (particle->cell_id() != std::numeric_limits<mpm::Index>::max())
+      {
+        // If a cell id is present, but not a cell locate the cell from map
+        if (!particle->cell_ptr())
+        {
+          particle->assign_cell(map_cells_[particle->cell_id()]);
+        }
 
-    // Check if material point is in any of its nearest neighbours
-    const auto neighbours = map_cells_[particle->cell_id()]->neighbours();
-    Eigen::Matrix<double, Tdim, 1> xi;
-    Eigen::Matrix<double, Tdim, 1> coordinates = particle->coordinates();
-    for (auto neighbour : neighbours) {
-      if (map_cells_[neighbour]->is_point_in_cell(coordinates, &xi)) {
-        particle->assign_cell_xi(map_cells_[neighbour], xi);
-        return true;
+        if (particle->compute_reference_location())
+        {
+          return true;
+        }
+        // Check if material point is in any of its nearest neighbours
+        const auto neighbours = map_cells_[particle->cell_id()]->neighbours();
+        Eigen::Matrix<double, Tdim, 1> xi;
+        Eigen::Matrix<double, Tdim, 1> coordinates = particle->coordinates();
+        for (auto neighbour : neighbours)
+        {
+          if (map_cells_[neighbour]->is_point_in_cell(coordinates, &xi))
+          {
+            particle->assign_cell_xi(map_cells_[neighbour], xi);
+            return true;
+          }
+        }
       }
-    }
-  }
 
-  bool status = false;
-#pragma omp parallel for schedule(runtime)
-  for (auto citr = cells_.cbegin(); citr != cells_.cend(); ++citr) {
-    // Check if particle is already found, if so don't run for other cells
-    // Check if co-ordinates is within the cell, if true
-    // add particle to cell
-    Eigen::Matrix<double, Tdim, 1> xi;
-    if (!status && (*citr)->is_point_in_cell(particle->coordinates(), &xi)) {
-      particle->assign_cell_xi(*citr, xi);
-      status = true;
-    }
-  }
+      bool status = false;
+      #pragma omp parallel for schedule(runtime)
+      for (auto citr = cells_.cbegin(); citr != cells_.cend(); ++citr) {
+        // Check if particle is already found, if so don't run for other cells
+        // Check if co-ordinates is within the cell, if true
+        // add particle to cell
+        Eigen::Matrix<double, Tdim, 1> xi;
+        if (!status && (*citr)->is_point_in_cell(particle->coordinates(), &xi))
+        {
+          particle->assign_cell_xi(*citr, xi);
+          status = true;
+        }
+      }
 
-  return status;
+      return status;
 }
 
 //! Iterate over particles
