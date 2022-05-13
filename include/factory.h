@@ -57,30 +57,32 @@ class Factory {
             return status;
           }
 
-private:
-// Private constructor
-Factory() = default;
 
-//! A base class creator struct
-struct CreatorBase
-{
-  //! A virtual create function
-  virtual std::shared_ptr<Tbaseclass> create(Targs&&...) = 0;
-};
 
-  //! Creator class
-  //! \tparam Tderivedclass Derived class
-  template <typename Tderivedclass>
-  struct Creator : public CreatorBase
-  {
-    //! Create instance of object
-    std::shared_ptr<Tbaseclass> create(Targs&&... args) override
-    {
-      return std::make_shared<Tderivedclass>(std::forward<Targs>(args)...);
-    }
-  };
-  // Register of factory functions
-  std::map<std::string, std::shared_ptr<CreatorBase>> registry;
+        private:
+          // Private constructor
+          Factory() = default;
+
+          //! A base class creator struct
+          struct CreatorBase
+          {
+            //! A virtual create function
+            virtual std::shared_ptr<Tbaseclass> create(Targs&&...) = 0;
+          };
+
+          //! Creator class
+          //! \tparam Tderivedclass Derived class
+          template <typename Tderivedclass>
+          struct Creator : public CreatorBase
+          {
+            //! Create instance of object
+            std::shared_ptr<Tbaseclass> create(Targs&&... args) override
+            {
+              return std::make_shared<Tderivedclass>(std::forward<Targs>(args)...);
+            }
+          };
+          // Register of factory functions
+          std::map<std::string, std::shared_ptr<CreatorBase>> registry;
 };// end of yhe calss factory
 //////////////////////////////////////////////////////////::::
 

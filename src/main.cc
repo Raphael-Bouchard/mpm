@@ -52,9 +52,7 @@ int main(int argc, char** argv) {
     const std::string analysis = io->analysis_type();
 
     // Create an MPM analysis
-    auto mpm =
-        Factory<mpm::MPM, const std::shared_ptr<mpm::IO>&>::instance()->create(
-            analysis, std::move(io));
+    auto mpm = Factory<mpm::MPM, const std::shared_ptr<mpm::IO>&>::instance()->create(analysis, std::move(io));
     // Solve
     mpm->solve();
 
