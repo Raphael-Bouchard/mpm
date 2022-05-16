@@ -27,11 +27,11 @@ class QuadrilateralQuadrature : public Quadrature<Tdim> {
 
   //! Return quadrature points
   //! \param[out] qpoints Quadrature points in local coordinates
-  Eigen::MatrixXd quadratures() const override;
+  virtual Eigen::MatrixXd quadratures() const override;
 
   //! Return weights
   //! \param[out] weights Weights for quadrature points
-  Eigen::VectorXd weights() const override;
+  virtual Eigen::VectorXd weights() const override;
 };
 
 }  // namespace mpm

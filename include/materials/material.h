@@ -19,6 +19,10 @@ using Json = nlohmann::json;
 namespace mpm {
 
 // Forward declaration of ParticleBase
+ /*l'ide des classes partages est la suivante :
+ En C++, les déclarations Forward sont généralement utilisées pour les classes.
+ Dans ce cas, la classe est prédéfinie avant son utilisation afin qu'elle puisse
+ être appelée et utilisée par d'autres classes définies avant elle.*/
 template <unsigned Tdim>
 class ParticleBase;
 

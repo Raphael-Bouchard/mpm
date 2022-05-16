@@ -85,7 +85,7 @@ class QuadrilateralElement : public Element<Tdim> {
   }
 
   //! Return number of shape functions
-  unsigned nfunctions() const override { return Tnfunctions; }
+  inline unsigned nfunctions() const override { return Tnfunctions; }
 
   //! Evaluate shape functions at given local coordinates
   //! \param[in] xi given local coordinates
@@ -200,10 +200,10 @@ class QuadrilateralElement : public Element<Tdim> {
   Eigen::VectorXi face_indices(unsigned face_id) const override;
 
   //! Return the number of faces in a quadrilateral
-  unsigned nfaces() const override { return 4; }
+  inline unsigned nfaces() const override { return 4; }
 
   //! Return unit element length
-  double unit_element_length() const override { return 2.; }
+  inline double unit_element_length() const override { return 2.; }
 
   //! Return quadrature of the element
   std::shared_ptr<mpm::Quadrature<Tdim>> quadrature(

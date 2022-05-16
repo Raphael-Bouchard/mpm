@@ -27,10 +27,12 @@ class Material;
 enum ParticlePhase : unsigned int { Solid = 0, Liquid = 1, Gas = 2 };
 
 //! Particle type
+// sont definis dans particle.cc
+// le extern indique qu'on recupère ces defitions là
 extern std::map<std::string, int> ParticleType;
 extern std::map<int, std::string> ParticleTypeName;
 
-//! ParticleBase class
+//! \ParticleBase class
 //! \brief Base class that stores the information about particleBases
 //! \details ParticleBase class: id_ and coordinates.
 //! \tparam Tdim Dimension

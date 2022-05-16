@@ -1,7 +1,7 @@
 //! Construct a particle with id and coordinates
 template <unsigned Tdim>
-mpm::Particle<Tdim>::Particle(Index id, const VectorDim& coord)
-    : mpm::ParticleBase<Tdim>(id, coord) {
+mpm::Particle<Tdim>::Particle(Index id, const VectorDim& coord) : mpm::ParticleBase<Tdim>(id, coord)
+{
   this->initialise();
   // Clear cell ptr
   cell_ = nullptr;
@@ -17,8 +17,7 @@ mpm::Particle<Tdim>::Particle(Index id, const VectorDim& coord)
 
 //! Construct a particle with id, coordinates and status
 template <unsigned Tdim>
-mpm::Particle<Tdim>::Particle(Index id, const VectorDim& coord, bool status)
-    : mpm::ParticleBase<Tdim>(id, coord, status) {
+mpm::Particle<Tdim>::Particle(Index id, const VectorDim& coord, bool status) : mpm::ParticleBase<Tdim>(id, coord, status) {
   this->initialise();
   cell_ = nullptr;
   nodes_.clear();

@@ -55,14 +55,14 @@ class TriangleElement : public Element<Tdim> {
   }
 
   //! Return number of shape functions
-  unsigned nfunctions() const override { return Tnfunctions; }
+  virtual inline unsigned nfunctions() const override { return Tnfunctions; }
 
   //! Evaluate shape functions at given local coordinates
   //! \param[in] xi given local coordinates
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
   //! \retval shapefn Shape function of a given cell
-  Eigen::VectorXd shapefn(const VectorDim& xi, const VectorDim& particle_size,
+  virtual Eigen::VectorXd shapefn(const VectorDim& xi, const VectorDim& particle_size,
                           const VectorDim& deformation_gradient) const override;
 
   //! Evaluate local shape functions at given coordinates
@@ -70,7 +70,7 @@ class TriangleElement : public Element<Tdim> {
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
   //! \retval shapefn_local Shape function of a given cell
-  Eigen::VectorXd shapefn_local(
+  virtual Eigen::VectorXd shapefn_local(
       const VectorDim& xi, const VectorDim& particle_size,
       const VectorDim& deformation_gradient) const override;
 
@@ -79,7 +79,7 @@ class TriangleElement : public Element<Tdim> {
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
   //! \retval grad_shapefn Gradient of shape function of a given cell
-  Eigen::MatrixXd grad_shapefn(
+  virtual Eigen::MatrixXd grad_shapefn(
       const VectorDim& xi, const VectorDim& particle_size,
       const VectorDim& deformation_gradient) const override;
 
@@ -89,7 +89,7 @@ class TriangleElement : public Element<Tdim> {
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
   //! \retval jacobian Jacobian matrix
-  Eigen::Matrix<double, Tdim, Tdim> jacobian(
+  virtual Eigen::Matrix<double, Tdim, Tdim> jacobian(
       const VectorDim& xi, const Eigen::MatrixXd& nodal_coordinates,
       const VectorDim& particle_size,
       const VectorDim& deformation_gradient) const override;
@@ -100,7 +100,7 @@ class TriangleElement : public Element<Tdim> {
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
   //! \retval jacobian Jacobian matrix
-  Eigen::Matrix<double, Tdim, Tdim> jacobian_local(
+  virtual Eigen::Matrix<double, Tdim, Tdim> jacobian_local(
       const VectorDim& xi, const Eigen::MatrixXd& nodal_coordinates,
       const VectorDim& particle_size,
       const VectorDim& deformation_gradient) const override;
@@ -110,7 +110,7 @@ class TriangleElement : public Element<Tdim> {
   //! \param[in] nodal_coordinates Coordinates of nodes forming the cell
   //! \param[in] particle_size Particle size
   //! \param[in] deformation_gradient Deformation gradient
-  Eigen::MatrixXd dn_dx(const VectorDim& xi,
+  virtual Eigen::MatrixXd dn_dx(const VectorDim& xi,
                         const Eigen::MatrixXd& nodal_coordinates,
                         const VectorDim& particle_size,
                         const VectorDim& deformation_gradient) const override;
