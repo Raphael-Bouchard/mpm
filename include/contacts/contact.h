@@ -15,10 +15,10 @@ class Contact {
   Contact(const std::shared_ptr<mpm::Mesh<Tdim>>& mesh);
 
   //! Intialize
-  virtual inline void initialise(){};
+  virtual  void initialise(){};
 
   //! Compute contact forces
-  virtual inline void compute_contact_forces(){};
+  virtual void compute_contact_forces(){};
 
  protected:
   //! Mesh object
