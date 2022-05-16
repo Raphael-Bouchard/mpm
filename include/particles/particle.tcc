@@ -273,18 +273,19 @@ void mpm::Particle<Tdim>::initialise_material(unsigned phase_size) {
 template <unsigned Tdim>
 bool mpm::Particle<Tdim>::assign_material_state_vars(
     const mpm::dense_map& state_vars,
-    const std::shared_ptr<mpm::Material<Tdim>>& material, unsigned phase) {
-  bool status = false;
-  if (material != nullptr && this->material(phase) != nullptr &&
-      this->material_id(phase) == material->id()) {
-    // Clone state variables
-    auto mat_state_vars = (this->material(phase))->initialise_state_variables();
-    if (state_variables_[phase].size() == state_vars.size() &&
-        mat_state_vars.size() == state_vars.size()) {
-      this->state_variables_[phase] = state_vars;
-      status = true;
-    }
-  }
+    const std::shared_ptr<mpm::Material<Tdim>>& material, unsigned phase)
+    {
+      bool status = false;
+      if (material != nullptr && this->material(phase) != nullptr && this->material_id(phase) == material->id())
+      {
+          // Clone state variables
+          auto mat_state_vars = (this->material(phase))->initialise_state_variables();
+          if (state_variables_[phase].size() == state_vars.size() && mat_state_vars.size() == state_vars.size())
+          {
+            this->state_variables_[phase] = state_vars;
+            status = true;
+          }
+        }
   return status;
 }
 
@@ -424,7 +425,8 @@ bool mpm::Particle<Tdim>::compute_reference_location() noexcept {
   // Compute local coordinates
   Eigen::Matrix<double, Tdim, 1> xi;
   // Check if the point is in cell
-  if (cell_ != nullptr && cell_->is_point_in_cell(this->coordinates_, &xi)) {
+  if (cell_ != nullptr && cell_->is_point_in_cell(this->coordinates_, &xi))
+  {
     this->xi_ = xi;
     status = true;
   }
