@@ -56,7 +56,7 @@ class Material {
   Material& operator=(const Material&) = delete;
 
   //! Return id of the material
-  unsigned id() const { return id_; }
+  inline unsigned id() const { return id_; }
 
   //! Get material property
   //! \tparam Ttype Return type for proerpty

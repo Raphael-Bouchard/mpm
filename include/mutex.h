@@ -10,10 +10,10 @@ class SpinMutex {
 
  public:
   //! Attempt locking
-  bool try_lock() { return !lock_.test_and_set(std::memory_order_acquire); }
+  inline bool try_lock() { return !lock_.test_and_set(std::memory_order_acquire); }
 
   //! Call lock
-  void lock() {
+  inline void lock() {
     std::size_t spin_count{0};
     while (!try_lock()) {
       ++spin_count;
@@ -27,7 +27,7 @@ class SpinMutex {
   }
 
   //! Call unlock
-  void unlock() { lock_.clear(std::memory_order_release); }
+  inline void unlock() { lock_.clear(std::memory_order_release); }
 
  private:
   //! Lock variable
