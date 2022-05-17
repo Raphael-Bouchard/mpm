@@ -13,8 +13,7 @@ namespace mpm {
 //! Constraints class to store velocity and frictional constraints
 //! \brief Constraint class to store a constraint on mesh
 template <unsigned Tdim>
-class Constraint
-{
+class Constraints {
  public:
   // Constructor with mesh as input argument
   Constraints(std::shared_ptr<mpm::Mesh<Tdim>> mesh) {
