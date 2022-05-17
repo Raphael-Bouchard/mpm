@@ -27,26 +27,26 @@ class Vector {
   bool remove(const std::shared_ptr<T>&);
 
   //! Return number of elements in the vector
-  std::size_t size() const { return elements_.size(); }
+  inline std::size_t size() const { return elements_.size(); }
 
   //! Reserve the size of vector
-  void reserve(const mpm::Index size) { elements_.reserve(size); }
+  inline void reserve(const mpm::Index size) { elements_.reserve(size); }
 
   //! Clear
-  void clear() { elements_.clear(); }
+  inline void clear() { elements_.clear(); }
 
   //! Return begin iterator of nodes
-  typename std::vector<std::shared_ptr<T>>::const_iterator cbegin() const {
+  inline typename std::vector<std::shared_ptr<T>>::const_iterator cbegin() const {
     return elements_.cbegin();
   }
 
   //! Return end iterator of nodes
-  typename std::vector<std::shared_ptr<T>>::const_iterator cend() const {
+  inline typename std::vector<std::shared_ptr<T>>::const_iterator cend() const {
     return elements_.cend();
   }
 
   //! Return value at a given index
-  std::shared_ptr<T> operator[](Index id) const { return elements_.at(id); }
+  inline std::shared_ptr<T> operator[](Index id) const { return elements_.at(id); }
 
   //! Iterate over elements in the vector
   //! \tparam T A class with a template argument Tdim

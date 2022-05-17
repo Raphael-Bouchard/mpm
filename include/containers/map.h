@@ -37,28 +37,28 @@ class Map {
   bool remove(Index id);
 
   //! Clear all entities
-  void clear() { elements_.clear(); }
+  inline void clear() { elements_.clear(); }
 
   //! Return number of elements in the container
-  std::size_t size() const { return elements_.size(); }
+  inline std::size_t size() const { return elements_.size(); }
 
   //! Return value at a given index
-  std::shared_ptr<T> operator[](Index id) const { return elements_.at(id); }
+  inline std::shared_ptr<T> operator[](Index id) const { return elements_.at(id); }
 
   //! Return begin iterator of map
-  typename tsl::robin_map<Index, std::shared_ptr<T>>::const_iterator begin()
+  inline  typename tsl::robin_map<Index, std::shared_ptr<T>>::const_iterator begin()
       const {
     return elements_.cbegin();
   }
 
   //! Return end iterator of map
-  typename tsl::robin_map<Index, std::shared_ptr<T>>::const_iterator end()
+  inline typename tsl::robin_map<Index, std::shared_ptr<T>>::const_iterator end()
       const {
     return elements_.cend();
   }
 
   //! Return iterator of find
-  auto find(Index id) const { return elements_.find(id); }
+  inline auto find(Index id) const { return elements_.find(id); }
 
   //! Iterate over elements in the container
   //! \tparam Tunaryfn A unary function
