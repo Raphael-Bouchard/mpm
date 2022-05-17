@@ -28,13 +28,14 @@ class Traction {
         traction_{traction} {};
 
   // Set id
-  int setid() const { return setid_; }
+  inline int setid() const { return setid_; }
 
   // Direction
-  unsigned dir() const { return dir_; }
+  inline unsigned dir() const { return dir_; }
 
   // Return traction
-  double traction(double current_time) const {
+  inline double traction(double current_time) const
+  {
     // Static load when no math function is defined
     double scalar = (this->traction_fn_ != nullptr)
                         ? (this->traction_fn_)->value(current_time)

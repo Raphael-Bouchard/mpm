@@ -13,13 +13,13 @@ namespace mpm {
 //! Constraints class to store velocity and frictional constraints
 //! \brief Constraint class to store a constraint on mesh
 template <unsigned Tdim>
-class Constraints {
+class Constraint
+{
  public:
   // Constructor with mesh as input argument
   Constraints(std::shared_ptr<mpm::Mesh<Tdim>> mesh) {
     mesh_ = mesh;
-    console_ =
-        std::make_unique<spdlog::logger>("Constraints", mpm::stdout_sink);
+    console_ = std::make_unique<spdlog::logger>("Constraints", mpm::stdout_sink);
   }
 
   //! Assign nodal velocity constraints

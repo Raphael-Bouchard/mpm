@@ -17,16 +17,16 @@ class FrictionConstraint {
       : setid_{setid}, dir_{dir}, sign_n_{sign_n}, friction_{friction} {};
 
   // Set id
-  int setid() const { return setid_; }
+  inline int setid() const { return setid_; }
 
   // Direction
-  unsigned dir() const { return dir_; }
+  inline unsigned dir() const { return dir_; }
 
   // Sign of normal component
-  int sign_n() const { return sign_n_; }
+  inline int sign_n() const { return sign_n_; }
 
   // Return friction
-  double friction() const { return friction_; }
+  inline double friction() const { return friction_; }
 
  private:
   // ID

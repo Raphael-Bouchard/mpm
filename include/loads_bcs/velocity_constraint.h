@@ -16,13 +16,13 @@ class VelocityConstraint {
       : setid_{setid}, dir_{dir}, velocity_{velocity} {};
 
   // Set id
-  int setid() const { return setid_; }
+  inline int setid() const { return setid_; }
 
   // Direction
-  unsigned dir() const { return dir_; }
+  inline unsigned dir() const { return dir_; }
 
   // Return velocity
-  double velocity() const { return velocity_; }
+  inline double velocity() const { return velocity_; }
 
  private:
   // ID
