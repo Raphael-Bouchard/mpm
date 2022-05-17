@@ -27,7 +27,7 @@ class FunctionBase {
   virtual ~FunctionBase() = default;
 
   //! Return id of the function
-  unsigned id() const { return id_; }
+  inline unsigned id() const { return id_; }
 
   //! Return the value of the function at given input
   //! \param[in] input x
