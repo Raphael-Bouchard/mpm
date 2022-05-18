@@ -1,7 +1,8 @@
 //! Constructor with material properties
 template <unsigned Tdim>
 mpm::Newtonian<Tdim>::Newtonian(unsigned id, const Json& material_properties)
-    : Material<Tdim>(id, material_properties) {
+    : Material<Tdim>(id, material_properties)
+{
   try {
     density_ = material_properties.at("density").template get<double>();
     bulk_modulus_ =
@@ -10,14 +11,19 @@ mpm::Newtonian<Tdim>::Newtonian(unsigned id, const Json& material_properties)
         material_properties.at("dynamic_viscosity").template get<double>();
 
     // Special material properties
-    if (material_properties.contains("incompressible")) {
-      bool incompressible =
-          material_properties.at("incompressible").template get<bool>();
-      if (incompressible) compressibility_multiplier_ = 0.0;
+    if (material_properties.contains("incompressible"))
+    {
+      bool incompressible =material_properties.at("incompressible").template get<bool>();
+      if (incompressible)
+      {
+        compressibility_multiplier_ = 0.0;
+      }
     }
 
     properties_ = material_properties;
-  } catch (Json::exception& except) {
+  }
+  catch (Json::exception& except)
+  {
     console_->error("Material parameter not set: {} {}\n", except.what(),
                     except.id);
   }
