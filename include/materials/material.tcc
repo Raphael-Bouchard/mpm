@@ -11,7 +11,9 @@ Ttype mpm::Material<Tdim>::property(const std::string& key)
   {
     console_->error("Property call to material parameter not found: {}",
                     except.what());
-    throw std::runtime_error(
-        "Property call to material parameter not found or invalid type");
+    // le throw va stoppe le code car il utilise le THROW DANS le catch
+    // POURQUOI NE PAS ARRETER LE CODE AVEC UN return -1; ?
+    //throw std::runtime_error("Property call to material parameter not found or invalid type");
+    return -1;
   }
 }
