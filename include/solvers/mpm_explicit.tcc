@@ -5,6 +5,7 @@ mpm::MPMExplicit<Tdim>::MPMExplicit(const std::shared_ptr<IO>& io)
   //! Logger
   console_ = spdlog::get("MPMExplicit");
   //! Stress update
+  // c'est ici qu'on doit rajouter une option si oin veut un cas DEM
   if (this->stress_update_ == "usl")
     mpm_scheme_ = std::make_shared<mpm::MPMSchemeUSL<Tdim>>(mesh_, dt_);
   else
@@ -34,6 +35,31 @@ void mpm::MPMExplicit<Tdim>::compute_stress_strain(unsigned phase) {
   // Iterate over each particle to compute stress
   mesh_->iterate_over_particles(std::bind(
       &mpm::ParticleBase<Tdim>::compute_stress, std::placeholders::_1));
+}
+
+
+
+//! MPM Explicit compute ONLY strain
+template <unsigned Tdim>
+void mpm::MPMExplicit<Tdim>::compute_strain(unsigned phase) {
+  // Iterate over each particle to calculate strain
+  mesh_->iterate_over_particles(std::bind(
+      &mpm::ParticleBase<Tdim>::compute_strain, std::placeholders::_1, dt_));
+
+  // Iterate over each particle to update particle volume
+  mesh_->iterate_over_particles(std::bind(
+      &mpm::ParticleBase<Tdim>::update_volume, std::placeholders::_1));
+
+  // Pressure smoothing
+  // est-ce que je dois le gardeer ?
+  // voir a quoi correspond le pressure smoothing. 
+  if (pressure_smoothing_) this->pressure_smoothing(phase);
+
+  // Iterate over each particle to compute stress
+  // partie permettant de calculer la contraintes, or dans le cas de la mpm
+  // ce sera yade qui le fera.
+  /*mesh_->iterate_over_particles(std::bind(
+      &mpm::ParticleBase<Tdim>::compute_stress, std::placeholders::_1));*/
 }
 
 //! MPM Explicit solver
@@ -152,6 +178,9 @@ bool mpm::MPMExplicit<Tdim>::solve() {
     contact_->compute_contact_forces();
 
     // Update stress first
+    //fonction contenu dans mpm_scheme_usf
+    // qui en fait appelle la fonction compute_stress_strain
+    // qui est défini en haut de ce fichier
     mpm_scheme_->precompute_stress_strain(phase, pressure_smoothing_);
 
     // Compute forces
@@ -163,6 +192,9 @@ bool mpm::MPMExplicit<Tdim>::solve() {
                                              damping_factor_);
 
     // Update Stress Last
+    //fonction contenu dans mpm_scheme_usl
+    // qui en fait appelle la fonction compute_stress_strain
+    // qui est défini en haut de ce fichier
     mpm_scheme_->postcompute_stress_strain(phase, pressure_smoothing_);
 
     // Locate particles

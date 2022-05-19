@@ -26,6 +26,10 @@ class MPMExplicit : public MPMBase<Tdim> {
   //! \param[in] phase Phase to smooth pressure
   void compute_stress_strain(unsigned phase);
 
+  // fonction qui servira en vu de la DEM,
+  // on peut aissi calculer le deplcement ans la contrainte
+  void compute_strain(unsigned phase);
+
  protected:
   // Generate a unique id for the analysis
   using mpm::MPMBase<Tdim>::uuid_;

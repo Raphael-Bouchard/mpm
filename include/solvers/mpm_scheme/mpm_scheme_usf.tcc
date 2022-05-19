@@ -5,6 +5,7 @@ mpm::MPMSchemeUSF<Tdim>::MPMSchemeUSF(
     : mpm::MPMScheme<Tdim>(mesh, dt) {}
 
 //! Precompute stresses and strains
+// appelle la fonction contenu dans mpm_explicit.h
 template <unsigned Tdim>
 inline void mpm::MPMSchemeUSF<Tdim>::precompute_stress_strain(
     unsigned phase, bool pressure_smoothing) {
@@ -12,6 +13,7 @@ inline void mpm::MPMSchemeUSF<Tdim>::precompute_stress_strain(
 }
 
 //! Postcompute stresses and strains
+// ne fait rien car on est dans USF
 template <unsigned Tdim>
 inline void mpm::MPMSchemeUSF<Tdim>::postcompute_stress_strain(
     unsigned phase, bool pressure_smoothing) {}
