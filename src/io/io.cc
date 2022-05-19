@@ -53,15 +53,22 @@ mpm::IO::IO(int argc, char** argv) {
 
 //! Return input file name of mesh/submesh/soil particles
 //! or an empty string if specified file for the key is not found
+
+//fonction utilise dan mpm::MPMBase<2u>
+
 std::string mpm::IO::file_name(const std::string& filename) {
 
   std::string file_name;
   // Read input file name from the JSON object
   try {
+
     file_name = working_dir_ + filename;
     // Check if a file is present, if not set file_name to empty
     if (!this->check_file(file_name))
+    {
+      std::cout << "check_file = " << this->check_file(file_name) << '\n';
       throw std::runtime_error("no file found!");
+    }
 
   } catch (const std::exception& except) {
     console_->warn("Fetching file: {}; failed with: {}", filename,
@@ -73,6 +80,7 @@ std::string mpm::IO::file_name(const std::string& filename) {
 }
 
 //! Check if a file is present
+
 bool mpm::IO::check_file(const std::string& filename) {
   bool status = false;
 
@@ -80,7 +88,7 @@ bool mpm::IO::check_file(const std::string& filename) {
   std::ifstream file;
   file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   try {
-    file.open(filename);
+    file.open(filename.c_str());
     status = true;
     file.close();
   } catch (std::exception& exception) {
@@ -178,53 +186,73 @@ std::string mpm::IO::output_folder() const {
   return path;
 }
 
-
+// fonction servant à copier les fichier d'entree dans le dossier adapte
+// qui est result > analisis_id > input_file 
 void mpm::IO::copy_input_file()
 {
 
   int longueur_chaine_working_directory = working_dir_.length();
   int longueur_chaine_chemin_absolu;
   std::string convert_file;
-  
-   for (const auto & file : boost::filesystem::directory_iterator(working_dir_) )
-       {
-         // on convertie l'objet boost::filesystem en string pour le manipuler
-         // sachant que  boost::filesystem::directory_iterator renvoie le chemin absolu
-         convert_file = boost::filesystem::canonical(file).string();
-         //std::cout << "convert_file = " << convert_file << '\n';
+  std::string verif_existence;
 
-         // on veut obtenir que les noms des fichiers
-         // donc on cherche a supprimer le chemin absolu devant le nom
+  //boucle for pour récuperer la liste des fichiers d'entrées
+  for (const auto & file : boost::filesystem::directory_iterator(working_dir_) )
+  {
+    // on convertie l'objet boost::filesystem en string pour le manipuler
+    // sachant que  boost::filesystem::directory_iterator renvoie le chemin absolu
+    convert_file = boost::filesystem::canonical(file).string();
+    //std::cout << "juste après conversion : convert_file = " << convert_file<< '\n';
 
-         // la  ligne ci-dessous permet de comparer les chaines de caractères
-         // on recupère donc la position dans la chaine contenant le chemin absolu
-         // a partir de laquelle le working_dir_ commence.
-         longueur_chaine_chemin_absolu= convert_file.rfind(working_dir_);
-         longueur_chaine_chemin_absolu += longueur_chaine_working_directory;
 
-         // on surppime ainsi le debuit de la chain de caraère (le chemin absolu )
-         // on obtient ainsi juste le nom du fichier
-         //std::cout <<  longueur_chaine_chemin_absolu + longueur_chaine_working_directory<< '\n';
-         convert_file.erase(0,longueur_chaine_chemin_absolu);//longueur_chaine_working_directory+longueur_chaine_working_directory);
-         //std::cout << "convert_file  after erase = " << convert_file << '\n';
+    // on veut obtenir que les noms des fichiers
+    // donc on cherche a supprimer le chemin absolu devant le nom
 
+    // la  ligne ci-dessous permet de comparer les chaines de caractères
+    // on recupère donc la position dans la chaine contenant le chemin absolu
+    // a partir de laquelle le working_dir_ commence.
+    longueur_chaine_chemin_absolu  = convert_file.rfind(working_dir_);
+    longueur_chaine_chemin_absolu += longueur_chaine_working_directory;
+
+    // on surppime ainsi le debuit de la chain de caraère (le chemin absolu )
+    // on obtient ainsi juste le nom du fichier
+    verif_existence =  convert_file;
+    convert_file = convert_file.erase(0,longueur_chaine_chemin_absolu);
+    //std::cout << "apres eras : convert_file = "<< convert_file << '\n';
+    verif_existence =  verif_existence.erase(longueur_chaine_chemin_absolu,verif_existence.length());
+    //std::cout << "convert_file" << '\n';
+    // ainsi convert_file contient le nom du fichier et
+    // verif existence contient le chemin absolu jusqu'au fichier
+    //verif_existence = working_dir_ + convert_file;
+
+    verif_existence+= convert_file;
+
+    // ici on verifie si le fichier existe obtient// permet de vérifier si la decoupe du
+    // chemin s'est bien passé
+
+     try{
          // on ne conserve que les fichiers (ie : les noms avec un . dedans)
          if(convert_file.find(".") != std::string::npos)
          {
-
            //liste_nom_input_file_.push_back(convert_file);
-
+           if (!check_file(verif_existence)) //!boost::filesystem::exists(verif_existence))
+             {
+               throw std::runtime_error("no file found! -> function copy_input_file : io.cc / probablement l'étape de decoupage qui s'est mal passé les fichiers input n'ont donc pas été copiés dans les résultats");
+             }
            // copy les fichiers dans le repertoire prevu pour
            boost::filesystem::copy_file(working_dir_+convert_file, chemin_copy_input_+convert_file,boost::filesystem::copy_option::overwrite_if_exists);
          }
-       }
-       // la boucle ci-dessous sert a fficher la liste des fichier qui sont a copier
-       /*for (int i = 0; i < 5; i++)
-       {
-         std::cout << liste_nom_input_file_[i] << '\n';
-       }*/
-}
+       }// fin try
 
+     catch (const std::exception& except)
+     {
+       console_->warn("Fetching file: {}; failed with: {}", convert_file,
+                      except.what());
+       convert_file.clear();
+     } //fin catch
+
+   }// fin boucle for
+}// fin fonction copy
 
 
 

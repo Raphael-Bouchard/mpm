@@ -49,7 +49,7 @@ class Node : public NodeBase<Tdim> {
 
   //! Assign coordinates
   //! \param[in] coord Assign coord as coordinates of the nodebase
-  void assign_coordinates(const VectorDim& coord) override {
+  inline void assign_coordinates(const VectorDim& coord) override {
     coordinates_ = coord;
   }
 
