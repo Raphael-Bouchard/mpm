@@ -60,6 +60,9 @@ class IO {
   //! Return JSON analysis boolean
   bool analysis_bool(const std::string& key) const;
 
+  void copy_input_file();
+
+
   //! Return the entity sets from the input set JSON file
   //! \param[in] filename File name
   //! \param[in] sets_type type of sets
@@ -69,6 +72,7 @@ class IO {
 
   //! Return the output folder for the analysis
   std::string output_folder() const;
+
 
   //! Working directory
   std::string working_dir() const { return working_dir_; }
@@ -88,10 +92,15 @@ class IO {
                                       bool parallel = true);
 
  private:
+   std::vector<std::string> liste_nom_input_file_;
   //! Number of parallel threads
   unsigned nthreads_{0};
   //! Working directory
   std::string working_dir_;
+
+  //! directory where we copy the input files
+  std::string chemin_copy_input_;
+
   //! Input file name
   std::string input_file_{"mpm.json"};
   //! Input JSON object

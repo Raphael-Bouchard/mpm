@@ -181,6 +181,8 @@ void mpm::MPMBase<Tdim>::initialise_mesh() {
 
   // Get mesh properties
   auto mesh_props = io_->json_object("mesh");
+
+
   // Get Mesh reader from JSON object
   const std::string io_type = mesh_props["io_type"].template get<std::string>();
 
@@ -206,6 +208,8 @@ void mpm::MPMBase<Tdim>::initialise_mesh() {
   // Mesh file
   std::string mesh_file =
       io_->file_name(mesh_props["mesh"].template get<std::string>());
+
+
 
   // Create nodes from file
   bool node_status =
@@ -283,6 +287,7 @@ void mpm::MPMBase<Tdim>::initialise_particles() {
 
   // Get mesh properties
   auto mesh_props = io_->json_object("mesh");
+
   // Get Mesh reader from JSON object
   const std::string io_type = mesh_props["io_type"].template get<std::string>();
 
@@ -330,6 +335,14 @@ void mpm::MPMBase<Tdim>::initialise_particles() {
   particle_io->write_particles_cells(
       io_->output_file("particles-cells", ".txt", uuid_, 0, 0).string(),
       mesh_->particles_cells());
+
+    // fonction permettant de copier les fichier inout dans le dossier dédié dans les résultats
+    // peut en soit être appelé n'importe quand, mais il faut que la fonction output_file est était appelée
+    // avant, c'est pourquoi on l'a mis là
+    // en effet ainsi elle n'est appelée qu'une seule fois, que si on l'avait appelé directement dans
+    // output_file, elle aurait étét appelé pleins de fois, ce qui est con
+  io_-> copy_input_file();
+
 
   auto particles_locate_end = std::chrono::steady_clock::now();
   console_->info("Rank {} Locate particles: {} ms", mpi_rank,
@@ -967,6 +980,7 @@ template <unsigned Tdim>
 void mpm::MPMBase<Tdim>::particles_cells(
     const Json& mesh_props,
     const std::shared_ptr<mpm::IOMesh<Tdim>>& particle_io) {
+
   try {
     if (mesh_props.find("particle_cells") != mesh_props.end()) {
       std::string fparticles_cells =
@@ -1061,8 +1075,7 @@ void mpm::MPMBase<Tdim>::particles_stresses(
     const std::shared_ptr<mpm::IOMesh<Tdim>>& particle_io) {
   try {
     if (mesh_props.find("particles_stresses") != mesh_props.end()) {
-      std::string fparticles_stresses =
-          mesh_props["particles_stresses"].template get<std::string>();
+      std::string fparticles_stresses = mesh_props["particles_stresses"].template get<std::string>();
       if (!io_->file_name(fparticles_stresses).empty()) {
 
         // Get stresses of all particles

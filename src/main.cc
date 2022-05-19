@@ -42,6 +42,8 @@ int main(int argc, char** argv) {
     // Create an IO object
     auto io = std::make_shared<mpm::IO>(argc, argv);
 
+
+
     // If number of threads are positive set to nthreads
     unsigned nthreads = io->nthreads();
 #ifdef _OPENMP
@@ -51,10 +53,16 @@ int main(int argc, char** argv) {
     // Get analysis type
     const std::string analysis = io->analysis_type();
 
+
     // Create an MPM analysis
     auto mpm = Factory<mpm::MPM, const std::shared_ptr<mpm::IO>&>::instance()->create(analysis, std::move(io));
+
+    
     // Solve
     mpm->solve();
+
+
+
 
   } catch (std::exception& exception) {
     std::cerr << "MPM main: " << exception.what() << std::endl;

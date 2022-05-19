@@ -96,6 +96,7 @@ boost::filesystem::path mpm::IO::output_file(const std::string& attribute,
                                              const std::string& analysis_id,
                                              unsigned step, unsigned max_steps,
                                              bool parallel) {
+
   std::stringstream file_name;
   std::string path = this->output_folder();
 
@@ -130,9 +131,26 @@ boost::filesystem::path mpm::IO::output_file(const std::string& attribute,
   if (!boost::filesystem::exists(dir)) boost::filesystem::create_directory(dir);
 
   // Create analysis folder
+  //analysis_id est le nom du dossier contenue dans le dossier "result" ou seront ecrit les resultats
+  // ie; result > analysis_id > *.vtk
   path += analysis_id + "/";
+
+
+  //std::cout << "ligne 135 ficier io.cc" << '\n';
+  //std::cout << "analysis id = " << analysis_id << '\n';
   dir = path;
   if (!boost::filesystem::exists(dir)) boost::filesystem::create_directory(dir);
+
+  mpm::IO::chemin_copy_input_ = path + "input_file/";
+  //std::cout << "ligne 145 io.cc, chemin_copy_input_ = "<< chemin_copy_input_ << '\n';
+  boost::filesystem::path dir_to_copy(chemin_copy_input_);
+  dir_to_copy = chemin_copy_input_;
+  if (!boost::filesystem::exists(dir_to_copy))
+  {
+    boost::filesystem::create_directory(dir_to_copy);
+  }
+
+
 
   boost::filesystem::path file_path(path + file_name.str().c_str());
   return file_path;
@@ -148,12 +166,64 @@ std::string mpm::IO::output_folder() const {
     auto results = json_postprocess.at("path");
     if (!results.empty()) path = results;
 
+
+
   } catch (std::exception& except) {
     console_->error("Output file creation: {}", except.what());
     console_->warn("Using default path: {}", path);
   }
+
+
+
   return path;
 }
+
+
+void mpm::IO::copy_input_file()
+{
+
+  //liste_nom_input_file_.push_back();
+  //std::cout << "ligne 184 io.cc liste des noms "<< liste_nom_input_file_[0] << '\n';
+  //std::cout << "working_dir_ = "<< working_dir_ << '\n';
+  int longueur_chaine_working_directory = working_dir_.length();
+  int longueur_chaine_chemin_absolu;
+  std::string convert_file;
+   for (const auto & file : boost::filesystem::directory_iterator(working_dir_) )
+       {
+         // on convertie l'objet boost::filesystem en string pour le manipuler
+         // sachant que  boost::filesystem::directory_iterator renvoie le chemin absolu
+         convert_file = boost::filesystem::canonical(file).string();
+
+         // on veut obtenir que les noms des fichiers
+         // donc on cherche a supprimer le chemin absolu devant le nom
+
+         // la  ligne ci-dessous permet de comparer les chaines de caractères
+         // on recupère donc la position dans la chaine contenant le chemin absolu
+         // a partir de laquelle le working_dir_ commence.
+         longueur_chaine_chemin_absolu= convert_file.rfind(working_dir_);
+
+         // on surppime ainsi le debuit de la chain de caraère (le chemin absolu )
+         // on obtient ainsi juste le nom du fichier
+         convert_file.erase(0,longueur_chaine_working_directory+longueur_chaine_working_directory+1);
+
+         // on ne conserve que les fichiers (ie : les noms avec un . dedans)
+         if(convert_file.find(".") != std::string::npos)
+         {
+           //std::cout << "convert_file = "<< convert_file << '\n';
+           liste_nom_input_file_.push_back(convert_file);
+           //std::cout << "chemin_copy_input_ = " << chemin_copy_input_ << '\n';
+           boost::filesystem::copy_file(working_dir_+convert_file, chemin_copy_input_+convert_file,boost::filesystem::copy_option::overwrite_if_exists);
+         }
+       }
+       // la boucle ci-dessous sert a fficher la liste des fichier qui sont a copier
+       /*for (int i = 0; i < 5; i++)
+       {
+         std::cout << liste_nom_input_file_[i] << '\n';
+       }*/
+}
+
+
+
 
 //! Return map of entity sets from the JSON file
 tsl::robin_map<mpm::Index, std::vector<mpm::Index>> mpm::IO::entity_sets(

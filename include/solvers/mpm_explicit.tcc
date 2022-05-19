@@ -187,7 +187,8 @@ bool mpm::MPMExplicit<Tdim>::solve() {
       this->write_partio(this->step_, this->nsteps_);
 #endif
     }
-  } // fin de la boucle principale 
+  } // fin de la boucle principale
+
 
 
   auto solver_end = std::chrono::steady_clock::now();
