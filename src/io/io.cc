@@ -186,6 +186,7 @@ void mpm::IO::copy_input_file()
   //std::cout << "ligne 184 io.cc liste des noms "<< liste_nom_input_file_[0] << '\n';
   //std::cout << "working_dir_ = "<< working_dir_ << '\n';
   int longueur_chaine_working_directory = working_dir_.length();
+  //std::cout << "longueur_chaine_working_directory = " << longueur_chaine_working_directory << '\n';
   int longueur_chaine_chemin_absolu;
   std::string convert_file;
    for (const auto & file : boost::filesystem::directory_iterator(working_dir_) )
@@ -193,6 +194,7 @@ void mpm::IO::copy_input_file()
          // on convertie l'objet boost::filesystem en string pour le manipuler
          // sachant que  boost::filesystem::directory_iterator renvoie le chemin absolu
          convert_file = boost::filesystem::canonical(file).string();
+         //std::cout << "convert_file = " << convert_file << '\n';
 
          // on veut obtenir que les noms des fichiers
          // donc on cherche a supprimer le chemin absolu devant le nom
@@ -201,10 +203,17 @@ void mpm::IO::copy_input_file()
          // on recupère donc la position dans la chaine contenant le chemin absolu
          // a partir de laquelle le working_dir_ commence.
          longueur_chaine_chemin_absolu= convert_file.rfind(working_dir_);
+         longueur_chaine_chemin_absolu += longueur_chaine_working_directory;
+         /*std::cout << "longueur_chaine_chemin_absolu = "<< longueur_chaine_chemin_absolu << '\n';
 
+         std::cout << "convert_file[0] = " << convert_file[1] << '\n';
+         std::cout << "convertfile [ ] = "<< convert_file[longueur_chaine_chemin_absolu + longueur_chaine_working_directory] << '\n';
+         std::cout << "convertfile [ ] = "<< convert_file[48] << '\n';*/
          // on surppime ainsi le debuit de la chain de caraère (le chemin absolu )
          // on obtient ainsi juste le nom du fichier
-         convert_file.erase(0,longueur_chaine_working_directory+longueur_chaine_working_directory+1);
+         //std::cout <<  longueur_chaine_chemin_absolu + longueur_chaine_working_directory<< '\n';
+         convert_file.erase(0,longueur_chaine_chemin_absolu);//longueur_chaine_working_directory+longueur_chaine_working_directory);
+         //std::cout << "convert_file  after erase = " << convert_file << '\n';
 
          // on ne conserve que les fichiers (ie : les noms avec un . dedans)
          if(convert_file.find(".") != std::string::npos)
