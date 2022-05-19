@@ -212,6 +212,8 @@ void mpm::IO::copy_input_file()
            //std::cout << "convert_file = "<< convert_file << '\n';
            liste_nom_input_file_.push_back(convert_file);
            //std::cout << "chemin_copy_input_ = " << chemin_copy_input_ << '\n';
+
+           // copy les fichiers dans le repertoire prevu pour
            boost::filesystem::copy_file(working_dir_+convert_file, chemin_copy_input_+convert_file,boost::filesystem::copy_option::overwrite_if_exists);
          }
        }
