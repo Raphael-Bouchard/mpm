@@ -119,7 +119,7 @@ class Particle : public ParticleBase<Tdim> {
   bool assign_volume(double volume) override;
 
   //! Return volume
-  double volume() const override { return volume_; }
+  inline double volume() const override { return volume_; }
 
   //! Return size of particle in natural coordinates
   VectorDim natural_size() const override { return natural_size_; }

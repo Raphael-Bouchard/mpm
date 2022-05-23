@@ -1,29 +1,30 @@
 //! Constructor
 template <unsigned Tdim>
 mpm::MPMExplicit<Tdim>::MPMExplicit(const std::shared_ptr<IO>& io)
-    : mpm::MPMBase<Tdim>(io) {
-  //! Logger
-  console_ = spdlog::get("MPMExplicit");
-  //! Stress update
-  // c'est ici qu'on doit rajouter une option si oin veut un cas DEM
-  if (this -> DEM_COUPLING_ == false)
+    : mpm::MPMBase<Tdim>(io)
     {
-      if (this->stress_update_ == "usl")
-        mpm_scheme_ = std::make_shared<mpm::MPMSchemeUSL<Tdim>>(mesh_, dt_);
+      //! Logger
+      console_ = spdlog::get("MPMExplicit");
+      //! Stress update
+      // c'est ici qu'on doit rajouter une option si oin veut un cas DEM
+      if (this -> DEM_COUPLING_ == false)
+      {
+        if (this->stress_update_ == "usl")
+          mpm_scheme_ = std::make_shared<mpm::MPMSchemeUSL<Tdim>>(mesh_, dt_);
+        else
+          mpm_scheme_ = std::make_shared<mpm::MPMSchemeUSF<Tdim>>(mesh_, dt_);
+        }
       else
-        mpm_scheme_ = std::make_shared<mpm::MPMSchemeUSF<Tdim>>(mesh_, dt_);
-    }
-  else
-  {
-    // ajouter les lignes correspodnantes quand on saua ce que c'est
-  }
+      {
+        // ajouter les lignes correspodnantes quand on saua ce que c'est
+      }
 
-  //! Interface scheme
-  if (this->interface_)
-    contact_ = std::make_shared<mpm::ContactFriction<Tdim>>(mesh_);
-  else
-    contact_ = std::make_shared<mpm::Contact<Tdim>>(mesh_);
-}
+      //! Interface scheme
+      if (this->interface_)
+        contact_ = std::make_shared<mpm::ContactFriction<Tdim>>(mesh_);
+      else
+        contact_ = std::make_shared<mpm::Contact<Tdim>>(mesh_);
+    }
 
 //! MPM Explicit compute stress strain
 template <unsigned Tdim>
