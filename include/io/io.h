@@ -92,7 +92,7 @@ class IO {
                                       bool parallel = true);
 
  private:
-   std::vector<std::string> liste_nom_input_file_;
+  
   //! Number of parallel threads
   unsigned nthreads_{0};
   //! Working directory
