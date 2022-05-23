@@ -176,6 +176,8 @@ class MPMBase : public MPM {
   using mpm::MPM::post_process_;
   //! Logger
   using mpm::MPM::console_;
+  //! booleen du couplage dem
+  using mpm::MPM::DEM_COUPLING_; 
 
   //! Stress update method
   std::string stress_update_{"usf"};

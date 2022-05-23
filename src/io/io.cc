@@ -222,7 +222,8 @@ void mpm::IO::copy_input_file()
     // ici on verifie si le fichier existe obtient// permet de vérifier si la decoupe du
     // chemin s'est bien passé
 
-     try{
+     try
+     {
          // on ne conserve que les fichiers (ie : les noms avec un . dedans)
          if(convert_file.find(".") != std::string::npos)
          {

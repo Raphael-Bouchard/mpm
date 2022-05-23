@@ -35,11 +35,29 @@ mpm::MPMBase<Tdim>::MPMBase(const std::shared_ptr<IO>& io) : mpm::MPM(io) {
       {"stresses", VariableType::Tensor}};
 
   try {
+
+
     analysis_ = io_->analysis();
+
     // Time-step size
     dt_ = analysis_["dt"].template get<double>();
+
     // Number of time steps
     nsteps_ = analysis_["nsteps"].template get<mpm::Index>();
+
+    //COUPLAGE AVEC LA DEM
+    try {
+      if (analysis_.find("dem_coupling")!= analysis_.end())
+        {
+          DEM_COUPLING_ = analysis_["dem_coupling"].template get<bool>();
+        }
+    } catch (std::exception& exception) {
+      console_->warn(
+          "{} #{}: {}. Couplage DEM NON spécifié, Méthode MPM classique utilisée comme "
+          "default",
+          __FILE__, __LINE__, exception.what());
+    }
+
 
     // nload balance
     if (analysis_.find("nload_balance_steps") != analysis_.end())

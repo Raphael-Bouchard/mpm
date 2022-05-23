@@ -20,7 +20,7 @@ class MPMExplicit : public MPMBase<Tdim> {
   MPMExplicit(const std::shared_ptr<IO>& io);
 
   //! Solve
-  bool solve() override;
+  virtual bool solve() override;
 
   //! Compute stress strain
   //! \param[in] phase Phase to smooth pressure

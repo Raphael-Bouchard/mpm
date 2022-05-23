@@ -102,6 +102,9 @@ class MPM {
   Json post_process_;
   //! Logger
   std::shared_ptr<spdlog::logger> console_;
+
+  //! booleen servant au couplage DEM
+  bool DEM_COUPLING_ = false;
 };
 }  // namespace mpm
 
