@@ -16,7 +16,7 @@ mpm::MPMExplicit<Tdim>::MPMExplicit(const std::shared_ptr<IO>& io)
         }
       else
       {
-        // ajouter les lignes correspodnantes quand on saua ce que c'est
+        // ajouter les lignes correspodnantes quand on saura ce que c'est
       }
 
       //! Interface scheme
@@ -232,11 +232,20 @@ bool mpm::MPMExplicit<Tdim>::solve() {
 
 
   auto solver_end = std::chrono::steady_clock::now();
-  console_->info("Rank {}, Explicit {} solver duration: {} ms", mpi_rank,
-                 mpm_scheme_->scheme(),
-                 std::chrono::duration_cast<std::chrono::milliseconds>(
-                     solver_end - solver_begin)
-                     .count());
+  console_->info("Rank {}, Explicit {} solver duration: {} h {} min {} s {} ms", mpi_rank,
+                                    mpm_scheme_->scheme(),
+                                    std::chrono::duration_cast<std::chrono::hours>(
+                                        solver_end - solver_begin)
+                                        .count(),
+                                        std::chrono::duration_cast<std::chrono::minutes>(
+                                            solver_end - solver_begin)
+                                            .count(),
+                                            std::chrono::duration_cast<std::chrono::seconds>(
+                                                solver_end - solver_begin)
+                                                .count(),
+                                                std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                    solver_end - solver_begin)
+                                                    .count());
 
   return status;
 }
